@@ -46,10 +46,16 @@ def fetch_recipe_list():
         if validate_yes_no(user_cook):
             if user_cook.lower() == "y":
                 fetch_recipe_steps()
+                print("*" * 30)
                 break
             else:
                 break
-    main()
+    main_menu = input("Would you like to go back to the main menu? y/n: ")
+    while True:
+        if validate_yes_no(main_menu):
+            if main_menu.lower() == "y":
+                main()
+            break
 
 
 def fetch_recipe_steps():
@@ -70,7 +76,8 @@ def fetch_recipe_steps():
                         print(f"Recipe for {step.capitalize()}:")
                     else:
                         print(f"{step_no}: {step} \n")
-                print("*" * 20)
+                print("*" * 30)
+                print("Enjoy!")
                 break
             else:
                 print()
@@ -78,7 +85,6 @@ def fetch_recipe_steps():
                 print("Adding to the shopping list... \n")
                 add_shopping_list(next_step)
                 break
-    main()
 
 
 def check_ingredients(data):
@@ -103,10 +109,10 @@ def check_ingredients(data):
         inventory_amount = int(inventory_sheet.cell(inventory_search.row, 2).value)
         if ingredient_amount > inventory_amount:
             shortage = ingredient_amount - inventory_amount
-            print(f"{items[0]} short by {shortage}{items[2]}")
+            print(f"{items[0].upper()}: Short By: {shortage}{items[2]}")
             shortage_amount[items[0]] = f"{shortage}{items[2]}"
         else:
-            print(f"{items[0]}: Available")
+            print(f"{items[0].upper()}: Available")
     if shortage_amount:
         to_shop.append(shortage_amount)
         return shortage_amount
@@ -123,7 +129,6 @@ def add_shopping_list(shopping: dict):
         append_list = [ingredients, amount]
         shopping_list_sheet.append_row(append_list)
     print("Shopping list updated..")
-    print("*" * 20)
 
 
 def list_of_services():
@@ -192,8 +197,8 @@ def main():
     """
     Initial messages and codes to execute on the program launch
     """
-    user_input = ""
-    while user_input != "0":
+    # user_input = ""
+    while True:
         print("What would you like to do?")
         list_of_services()
         service_choice = input(": ")
