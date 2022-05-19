@@ -40,13 +40,14 @@ def fetch_recipe_list():
     for nos, recipe in enumerate(recipe_list):
         print(f"{nos+1}: {recipe.capitalize()}")
     print("*" * 10)
-    user_cook = input("Would you like to cook today?(y/n)  ")
-    print()
-    # ADD VALIDATION FUNCTION HERE
-    if user_cook.lower() == "y":
-        fetch_recipe_steps()
-    else:
-        main()
+    while True:
+        user_cook = input("Would you like to cook today?(y/n)  ")
+        print()
+        if validate_yes_no(user_cook):
+            if user_cook.lower() == "y":
+                fetch_recipe_steps()
+            else:
+                main()
 
 
 def fetch_recipe_steps():
@@ -132,7 +133,7 @@ def list_of_services():
             print(f"{nos+1}: {service}")
 
 
-def validate_user_input(user_input):
+def validate_service_choice(user_input):
     """
     Validate the user's choice for the services offered.
     """
@@ -145,8 +146,23 @@ def validate_user_input(user_input):
     except ValueError as error:
         print(f"Invalid Data: {error}")
         print()
+        return False  
+    return True
+
+
+def validate_yes_no(choice):
+    """
+    Validates user's answers for Yes/No queries.
+    """
+    try:
+        if choice.lower() != "y" and choice.lower() != "n":
+            raise ValueError(
+                f"choice: {choice} not valid. Please answer as 'y' or 'n'"
+            )
+    except ValueError as choice_error:
+        print(f"Invalid Data: {choice_error}")
+        print()
         return False
-    
     return True
 
 
@@ -158,16 +174,16 @@ def main():
     while user_input != "0":
         print("What would you like to do?")
         list_of_services()
-        user_input = input(": ")
+        service_choice = input(": ")
         print("*" * 20)
-        if validate_user_input(user_input):
-            if user_input == "1":
+        if validate_service_choice(service_choice):
+            if service_choice == "1":
                 fetch_recipe_list()
                 break
-            elif user_input == "2":
+            elif service_choice == "2":
                 print("You chose Check Ingredients")
                 break
-            elif user_input == "3":
+            elif service_choice == "3":
                 print("You chose Shopping List")
                 break
             else:
