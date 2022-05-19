@@ -132,6 +132,24 @@ def list_of_services():
             print(f"{nos+1}: {service}")
 
 
+def validate_user_input(user_input):
+    """
+    Validate the user's choice for the services offered.
+    """
+    try:
+        int(user_input)
+        if int(user_input) not in range(0, 4):
+            raise ValueError(
+                f"{user_input} not a valid option. Please choose a service from the list."
+            )
+    except ValueError as error:
+        print(f"Invalid Data: {error}")
+        print()
+        return False
+    
+    return True
+
+
 def main():
     """
     Initial messages and codes to execute on the program launch
@@ -141,19 +159,19 @@ def main():
         print("What would you like to do?")
         list_of_services()
         user_input = input(": ")
-        # ADD FUNCTION TO VALIDATE INPUT HERE
         print("*" * 20)
-        if user_input == "1":
-            fetch_recipe_list()
-            break
-        elif user_input == "2":
-            print("You chose Check Ingredients")
-            break
-        elif user_input == "3":
-            print("You chose Shopping List")
-            break
-        else:
-            break
+        if validate_user_input(user_input):
+            if user_input == "1":
+                fetch_recipe_list()
+                break
+            elif user_input == "2":
+                print("You chose Check Ingredients")
+                break
+            elif user_input == "3":
+                print("You chose Shopping List")
+                break
+            else:
+                break
 
 
 print("Hi there!")
