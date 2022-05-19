@@ -46,33 +46,38 @@ def fetch_recipe_list():
         if validate_yes_no(user_cook):
             if user_cook.lower() == "y":
                 fetch_recipe_steps()
+                break
             else:
-                main()
+                break
+    main()
 
 
 def fetch_recipe_steps():
     """
     Fetch the steps for the user's chosen recipe
     """
-    food_choice = input("What would you like to cook today? ")
     print("*" * 20)
-    # ADD VALIDATION FUNCTION HERE
-    next_step = check_ingredients(food_choice)
-    if next_step is False:
-        recipe_step_list = SHEET.worksheet("recipes")
-        search_recipe = recipe_step_list.find(food_choice.lower())
-        recipe_col = recipe_step_list.col_values(search_recipe.col)
-        for step_no, step in enumerate(recipe_col):
-            if step_no == 0:
-                print(f"Recipe for {step.capitalize()}:")
+    while True:
+        food_choice = input("What would you like to cook today? ")
+        if validate_recipe_choice(food_choice.lower()):
+            next_step = check_ingredients(food_choice)
+            if next_step is False:
+                recipe_step_list = SHEET.worksheet("recipes")
+                search_recipe = recipe_step_list.find(food_choice.lower())
+                recipe_col = recipe_step_list.col_values(search_recipe.col)
+                for step_no, step in enumerate(recipe_col):
+                    if step_no == 0:
+                        print(f"Recipe for {step.capitalize()}:")
+                    else:
+                        print(f"{step_no}: {step} \n")
+                print("*" * 20)
+                break
             else:
-                print(f"{step_no}: {step} \n")
-        print("*" * 20)
-    else:
-        print()
-        print("Not all ingredients available \n")
-        print("Adding to the shopping list... \n")
-        add_shopping_list(next_step)
+                print()
+                print("Not all ingredients available \n")
+                print("Adding to the shopping list... \n")
+                add_shopping_list(next_step)
+                break
     main()
 
 
@@ -162,6 +167,23 @@ def validate_yes_no(choice):
     except ValueError as choice_error:
         print(f"Invalid Data: {choice_error}")
         print()
+        return False
+    return True
+
+
+def validate_recipe_choice(recipe_choice):
+    """
+    Validate the user's choice of recipe against the available list of recipe.
+    """
+    recipe_list_sheet = SHEET.worksheet("recipes_list")
+    available_recipes = recipe_list_sheet.col_values(1)
+    try:
+        if recipe_choice not in available_recipes:
+            raise ValueError(
+                f"Sorry, recipe for {recipe_choice} not available. Please choose one from the list"
+            )
+    except ValueError as recipe_error:
+        print(f"Invalid chocie: {recipe_error}")
         return False
     return True
 
