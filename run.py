@@ -57,6 +57,7 @@ def fetch_recipe_list():
             if main_menu.lower() == "y":
                 main()
             break
+        main_menu = input(": ")
 
 
 def fetch_recipe_steps():
@@ -141,6 +142,28 @@ def check_inventory():
     print("Fetching the inventory details...\n")
     print("Available items:\n")
     fetch_inventory()
+    print("-" * 25)
+    print("Would you like to make changes to the inventory? y/n")
+    while True:
+        user_choice = input("> ")    
+        if validate_yes_no(user_choice):
+            if user_choice.lower() == "y":
+                print("Please type the ingredient name, amount and unit separated by space.")
+                print("For eg: tomato 200 g")
+                print("If ingredient has two words, use separator '-' or it might duplicate")
+                print("For eg: green-chilli 5 pc")
+                print("Press 0 to exit")
+                update_inventory()
+                break
+           
+            break
+    main_menu = input("Would you like to go back to the main menu? y/n: ")
+    while True:
+        if validate_yes_no(main_menu):
+            if main_menu.lower() == "y":
+                main()
+            break
+        main_menu = input(": ")
 
 
 def fetch_inventory():
@@ -152,6 +175,30 @@ def fetch_inventory():
     inventory_data = inventory_list.get_all_values()
     for serial, items in enumerate(inventory_data):
         print(f"{serial+1}: {items[0].capitalize()} - {items[1]}{items[2]}")
+
+
+def update_inventory():
+    """
+    Updates the inventory with user's input
+    """
+    inventory_items = inventory_list.col_values(1)
+    user_input = input("> ")
+    while user_input != "0":
+        input_list = user_input.split()
+        if validate_invnetory_input(input_list):
+            if input_list[0] in inventory_items:
+                print("Updating...")
+                get_row_number = inventory_list.find(input_list[0])
+                inventory_list.update_cell(get_row_number.row, 2, input_list[1])
+                inventory_list.update_cell(get_row_number.row, 3, input_list[2])
+                print("Updated \n")
+            else:
+                print("Adding...")
+                inventory_list.append_row(input_list)
+                print("Added \n")
+            
+        user_input = input("> ")
+    print("Inventory Updated! \n")
 
 
 def list_of_services():
@@ -213,6 +260,21 @@ def validate_recipe_choice(recipe_choice):
             )
     except ValueError as recipe_error:
         print(f"Invalid chocie: {recipe_error}")
+        return False
+    return True
+
+
+def validate_invnetory_input(data):
+    """
+    Validates the inventory data input by the user
+    """
+    try:
+        if len(data) != 3:
+            raise ValueError(
+                f"Input Data Invalid: {len(data)} items found out of 3."
+            )
+    except ValueError as inventory_error:
+        print(f"{inventory_error} Input the data as 'item amount unit'")
         return False
     return True
 
