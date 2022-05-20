@@ -28,9 +28,10 @@ SHEET = GSPREAD_CLIENT.open("kitchen_assistant")
 #             print(f"{no}: {step}")
 # else:
 #     print("Not ofund")
-#--------------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 
+# ---- RECIPE FUNCTIONS ----
 def fetch_recipe_list():
     """
     Fetch and displays all the available recipes.
@@ -131,11 +132,33 @@ def add_shopping_list(shopping: dict):
     print("Shopping list updated..")
 
 
+# ---- INGREDIENT FUNCTIONS ----
+def check_inventory():
+    """
+    Fetch a list of all the available items and their amount in the inventory.
+    Lets the user to add or edit items in the inventory
+    """
+    print("Fetching the inventory details...\n")
+    print("Available items:\n")
+    fetch_inventory()
+
+
+def fetch_inventory():
+    """
+    Access the inventory worksheet and gets the list
+    """
+    global inventory_list
+    inventory_list = SHEET.worksheet("inventory") 
+    inventory_data = inventory_list.get_all_values()
+    for serial, items in enumerate(inventory_data):
+        print(f"{serial+1}: {items[0].capitalize()} - {items[1]}{items[2]}")
+
+
 def list_of_services():
     """
     Generate all the services provided by the program.
     """
-    services = ["Check Recipe", "Check Ingredients", "Check Shopping List", "Exit"]
+    services = ["Check Recipe", "Check Inventory", "Check Shopping List", "Exit"]
     for nos, service in enumerate(services):
         if service == "Exit":
             print("0: Exit")
@@ -143,6 +166,7 @@ def list_of_services():
             print(f"{nos+1}: {service}")
 
 
+# ---- VALIDATION FUNCTIONS ----
 def validate_service_choice(user_input):
     """
     Validate the user's choice for the services offered.
@@ -208,7 +232,7 @@ def main():
                 fetch_recipe_list()
                 break
             elif service_choice == "2":
-                print("You chose Check Ingredients")
+                check_inventory()
                 break
             elif service_choice == "3":
                 print("You chose Shopping List")
