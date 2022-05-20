@@ -91,8 +91,8 @@ def fetch_recipe_steps():
 
 def check_ingredients(data):
     """
-    Check ingredients requirement against inventory to see whether required amount is present.
-    Returns True is ingredients are available, else create a shopping list.
+    Checks ingredient requirement against inventory to see whether required amount is present.
+    Returns True if ingredients are available, else create a shopping list.
     """
     recipe_ing_sheet = SHEET.worksheet("recipes_ing")
     ing_col_num = recipe_ing_sheet.find(data)  # Get column number of the recipe
@@ -111,10 +111,10 @@ def check_ingredients(data):
         inventory_amount = int(inventory_sheet.cell(inventory_search.row, 2).value)
         if ingredient_amount > inventory_amount:
             shortage = ingredient_amount - inventory_amount
-            print(f"{items[0].upper()}: Short By: {shortage}{items[2]}")
+            print(f"{items[0].upper()}: Required- {ingredient_amount}{items[2]} Short By: {shortage}{items[2]}")
             shortage_amount[items[0]] = f"{shortage}{items[2]}"
         else:
-            print(f"{items[0].upper()}: Available")
+            print(f"{items[0].upper()}: Required- {ingredient_amount}{items[2]}: Available")
     if shortage_amount:
         to_shop.append(shortage_amount)
         return shortage_amount
