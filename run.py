@@ -223,7 +223,7 @@ def check_shopping_list():
     SHOPPING_WORKSHEET = SHEET.worksheet("shopping_list")
     shopping_list = SHOPPING_WORKSHEET.get_all_values()
     print("Checking Shopping List...\n")
-    if shopping_list is not True:
+    if len(shopping_list) == 0:
         print("Shopping list is empty.")
     else:
         for index, items in enumerate(shopping_list):
