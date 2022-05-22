@@ -213,6 +213,83 @@ def list_of_services():
             print(f"{nos+1}: {service}")
 
 
+# ---- SHOPPING LIST FUNCTIONS ----
+def check_shopping_list():
+    """
+    Fetches the shopping list and provide options to add/remove items
+    or clear the list.
+    """
+    global SHOPPING_WORKSHEET
+    SHOPPING_WORKSHEET = SHEET.worksheet("shopping_list")
+    shopping_list = SHOPPING_WORKSHEET.get_all_values()
+    print("Checking Shopping List...\n")
+    if shopping_list is not True:
+        print("Shopping list is empty.")
+    else:
+        for index, items in enumerate(shopping_list):
+            print(f"{index + 1}. {items[0].capitalize()}: {items[1]}")
+    
+    print()
+    print("What would you like to do?")
+    shopping_list_options()
+    print("Select Option Number as 1, 2, 3")
+    while True:
+        user_choice = int(input("> "))
+        if validate_shopping_list_options(user_choice):
+            if user_choice == 1:
+                add_items()
+            elif user_choice == 2:
+                remove_items()
+            elif user_choice == 3:
+                clear_list()
+            else:
+                main()
+        break
+
+
+def add_items():
+    """
+    Lets user to add items to the shopping list.
+    """
+    print("Please type in the item name and amount with unit separated by.")
+    print("For eg. milk 1l")
+    print("Press 0 to exit.")
+    continue_add = "y"
+    while continue_add != "n":
+        item_list = []
+        if validate_yes_no(continue_add):
+            item_name = input("Name of the item: ")
+            item_list.append(item_name)
+            item_amount = input("Amount to buy: ")
+            item_list.append(item_amount)
+        SHOPPING_WORKSHEET.append_row(item_list)
+        print("Added!\n")
+        continue_add = input("Do you want to continue? y/n: ")
+
+    
+def remove_items():
+    """
+    Lets user to remove items from the shopping list.
+    """
+    print("Items removed")
+
+
+def clear_list():
+    """
+    Lets user to clear the Shopping List.
+    """
+    print("Shopping list cleared")
+
+
+def shopping_list_options():
+    """
+    Contains and prints services provided for Shopping List.
+    """
+    options = ["Add Items", "Remove Items", "Clear List", "Main Menu"]
+    for index, items in enumerate(options):
+        print(f"{index + 1}: {items}")
+
+
 # ---- VALIDATION FUNCTIONS ----
 def validate_service_choice(user_input):
     """
@@ -279,6 +356,21 @@ def validate_invnetory_input(data):
     return True
 
 
+def validate_shopping_list_options(user_input):
+    """
+    Validates the user input for Shopping List services.
+    """
+    try:
+        if user_input not in range(1, 5):
+            raise ValueError(
+                f"You selected {user_input}, which does not exist. Please choose a service from the list"
+            )
+    except ValueError as shopping_list_error:
+        print(f"Invalid Input: {shopping_list_error}")
+        return False
+    return True
+
+
 def main():
     """
     Initial messages and codes to execute on the program launch
@@ -297,7 +389,7 @@ def main():
                 check_inventory()
                 break
             elif service_choice == "3":
-                print("You chose Shopping List")
+                check_shopping_list()
                 break
             else:
                 break
