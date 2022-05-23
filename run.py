@@ -232,7 +232,7 @@ def check_shopping_list():
             elif user_choice == 3:
                 clear_list()
             else:
-                main()
+                break
             break
     main_menu = input("Would you like to go back to the main menu? y/n: ")
     while True:
@@ -408,7 +408,7 @@ def validate_remove_item(items):
     return True
 
 
-# ---- INTIALLY EXECUTING FUNCTIONS ----
+# ---- INTIAL EXECUTING FUNCTIONS ----
 def list_of_services():
     """
     Generate all the services provided by the program.
