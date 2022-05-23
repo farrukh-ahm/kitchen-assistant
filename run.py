@@ -49,13 +49,13 @@ def fetch_recipe_list():
                 fetch_recipe_steps()
                 print("*" * 30)
                 break
-            else:
-                break
+            break
     main_menu = input("Would you like to go back to the main menu? y/n: ")
     while True:
         if validate_yes_no(main_menu):
             if main_menu.lower() == "y":
                 main()
+                break
             break
         main_menu = input(": ")
 
@@ -133,7 +133,7 @@ def add_shopping_list(shopping: dict):
     print("Shopping list updated..")
 
 
-# ---- INGREDIENT FUNCTIONS ----
+# ---- INVENTORY FUNCTIONS ----
 def check_inventory():
     """
     Fetch a list of all the available items and their amount in the inventory.
@@ -162,6 +162,7 @@ def check_inventory():
         if validate_yes_no(main_menu):
             if main_menu.lower() == "y":
                 main()
+                break
             break
         main_menu = input(": ")
 
@@ -170,9 +171,9 @@ def fetch_inventory():
     """
     Access the inventory worksheet and gets the list
     """
-    global inventory_list
-    inventory_list = SHEET.worksheet("inventory") 
-    inventory_data = inventory_list.get_all_values()
+    global INVENTORY_LIST
+    INVENTORY_LIST = SHEET.worksheet("inventory") 
+    inventory_data = INVENTORY_LIST.get_all_values()
     for serial, items in enumerate(inventory_data):
         print(f"{serial+1}: {items[0].capitalize()} - {items[1]}{items[2]}")
 
@@ -181,36 +182,24 @@ def update_inventory():
     """
     Updates the inventory with user's input
     """
-    inventory_items = inventory_list.col_values(1)
+    inventory_items = INVENTORY_LIST.col_values(1)
     user_input = input("> ")
     while user_input != "0":
         input_list = user_input.split()
         if validate_invnetory_input(input_list):
             if input_list[0] in inventory_items:
                 print("Updating...")
-                get_row_number = inventory_list.find(input_list[0])
-                inventory_list.update_cell(get_row_number.row, 2, input_list[1])
-                inventory_list.update_cell(get_row_number.row, 3, input_list[2])
+                get_row_number = INVENTORY_LIST.find(input_list[0])
+                INVENTORY_LIST.update_cell(get_row_number.row, 2, input_list[1])
+                INVENTORY_LIST.update_cell(get_row_number.row, 3, input_list[2])
                 print("Updated \n")
             else:
                 print("Adding...")
-                inventory_list.append_row(input_list)
+                INVENTORY_LIST.append_row(input_list)
                 print("Added \n")
             
         user_input = input("> ")
     print("Inventory Updated! \n")
-
-
-def list_of_services():
-    """
-    Generate all the services provided by the program.
-    """
-    services = ["Check Recipe", "Check Inventory", "Check Shopping List", "Exit"]
-    for nos, service in enumerate(services):
-        if service == "Exit":
-            print("0: Exit")
-        else:
-            print(f"{nos+1}: {service}")
 
 
 # ---- SHOPPING LIST FUNCTIONS ----
@@ -244,7 +233,15 @@ def check_shopping_list():
                 clear_list()
             else:
                 main()
-        break
+            break
+    main_menu = input("Would you like to go back to the main menu? y/n: ")
+    while True:
+        if validate_yes_no(main_menu):
+            if main_menu.lower() == "y":
+                main()
+                break
+            break
+        main_menu = input(": ")
 
 
 def add_items():
@@ -262,23 +259,46 @@ def add_items():
             item_list.append(item_name)
             item_amount = input("Amount to buy: ")
             item_list.append(item_amount)
-        SHOPPING_WORKSHEET.append_row(item_list)
-        print("Added!\n")
+            SHOPPING_WORKSHEET.append_row(item_list)
+            print("Added!\n")
         continue_add = input("Do you want to continue? y/n: ")
 
-    
+
 def remove_items():
     """
     Lets user to remove items from the shopping list.
     """
-    print("Items removed")
+    shopping_list = SHOPPING_WORKSHEET.get_all_values()
+    if len(shopping_list) == 0:
+        print("No items found to remove.")
+    else:
+        print("You are choosing to delete items from the Shopping List.")
+        continue_remove = "y"
+        while continue_remove != "n":
+            if validate_yes_no(continue_remove):
+                item_to_remove = input("What would you like to remove from the list? ")
+                while True:
+                    if validate_remove_item(item_to_remove):
+                        item_row = SHOPPING_WORKSHEET.findall(item_to_remove)
+                        SHOPPING_WORKSHEET.delete_rows(item_row[-1].row)
+                        print("Item Removed.")
+                        break
+                    item_to_remove = input("> ")
+            continue_remove = input("Do you want to continue? y/n: ")
 
 
 def clear_list():
     """
     Lets user to clear the Shopping List.
     """
-    print("Shopping list cleared")
+    print("WARNING: This will clear the whole shopping list.")
+    while True:
+        list_clear = input("Do you want to continue? y/n: ")
+        if validate_yes_no(list_clear):
+            if list_clear.lower() == "y":
+                SHOPPING_WORKSHEET.clear()
+                print("Shopping List cleared!")
+            break
 
 
 def shopping_list_options():
@@ -369,6 +389,36 @@ def validate_shopping_list_options(user_input):
         print(f"Invalid Input: {shopping_list_error}")
         return False
     return True
+
+
+def validate_remove_item(items):
+    """
+    Checks whether the item to be removed from the list exists.
+    Returns true if the item is on the list, else returns an error.
+    """
+    shopping_items_list = SHOPPING_WORKSHEET.col_values(1)
+    try:
+        if items not in shopping_items_list:
+            raise ValueError(
+                f"{items} not on the list. Please choose an item from the list to remove."
+            )
+    except ValueError as remove_error:
+        print(f"Invalid Input: {remove_error}")
+        return False
+    return True
+
+
+# ---- INTIALLY EXECUTING FUNCTIONS ----
+def list_of_services():
+    """
+    Generate all the services provided by the program.
+    """
+    services = ["Check Recipe", "Check Inventory", "Check Shopping List", "Exit"]
+    for nos, service in enumerate(services):
+        if service == "Exit":
+            print("0: Exit")
+        else:
+            print(f"{nos+1}: {service}")
 
 
 def main():
