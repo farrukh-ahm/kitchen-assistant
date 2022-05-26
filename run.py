@@ -13,23 +13,6 @@ SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open("kitchen_assistant")
 
-# recepie = SHEET.worksheet("recipes")
-# recepie_list = SHEET.worksheet("recipes_list")
-# validation = recepie_list.col_values(1)
-# user_req = input("What you want to cook today? ")
-# if user_req in validation:
-#     rec_col = recepie.find(user_req)
-#     datas = recepie.col_values(rec_col.col)
-#     # print(f"Steps for {datas[0].capitalize()}")
-#     for no,step in enumerate(datas):
-#         if no == 0:
-#             print(f"Steps for {datas[0].capitalize()}")
-#         else:
-#             print(f"{no}: {step}")
-# else:
-#     print("Not ofund")
-# -----------------------------------------------------------------------------
-
 
 # ---- RECIPE FUNCTIONS ----
 def fetch_recipe_list():
@@ -40,7 +23,7 @@ def fetch_recipe_list():
     recipe_list = available_recipe_data.col_values(1)
     for nos, recipe in enumerate(recipe_list):
         print(f"{nos+1}: {recipe.capitalize()}")
-    print("*" * 10)
+    print("*" * 30)
     while True:
         user_cook = input("Would you like to cook today?(y/n)  ")
         print()
@@ -54,6 +37,7 @@ def fetch_recipe_list():
     while True:
         if validate_yes_no(main_menu):
             if main_menu.lower() == "y":
+                print()
                 main()
                 break
             break
@@ -64,18 +48,20 @@ def fetch_recipe_steps():
     """
     Fetch the steps for the user's chosen recipe
     """
-    print("*" * 20)
+    print("*" * 30)
     while True:
-        food_choice = input("What would you like to cook today? ")
+        food_choice = input("What would you like to cook? ")
         if validate_recipe_choice(food_choice.lower()):
             next_step = check_ingredients(food_choice)
             if next_step is False:
                 recipe_step_list = SHEET.worksheet("recipes")
                 search_recipe = recipe_step_list.find(food_choice.lower())
                 recipe_col = recipe_step_list.col_values(search_recipe.col)
+                print()
                 for step_no, step in enumerate(recipe_col):
                     if step_no == 0:
                         print(f"Recipe for {step.capitalize()}:")
+                        print("-" * 30)
                     else:
                         print(f"{step_no}: {step} \n")
                 print("*" * 30)
@@ -104,14 +90,16 @@ def check_ingredients(data):
     to_shop = []
     shortage_amount = {}
     inventory_sheet = SHEET.worksheet("inventory")
+    print()
     print("Checking ingredients....")
+    print("*" * 30)
     for items in ingredient_list:
         ingredient_amount = int(items[1])
         inventory_search = inventory_sheet.find(items[0])
         inventory_amount = int(inventory_sheet.cell(inventory_search.row, 2).value)
         if ingredient_amount > inventory_amount:
             shortage = ingredient_amount - inventory_amount
-            print(f"{items[0].upper()}: Required- {ingredient_amount}{items[2]} Short By: {shortage}{items[2]}")
+            print(f"** {items[0].upper()}: Required- {ingredient_amount}{items[2]} Short By: {shortage}{items[2]}")
             shortage_amount[items[0]] = f"{shortage}{items[2]}"
         else:
             print(f"{items[0].upper()}: Required- {ingredient_amount}{items[2]}: Available")
@@ -142,17 +130,21 @@ def check_inventory():
     print("Fetching the inventory details...\n")
     print("Available items:\n")
     fetch_inventory()
-    print("-" * 25)
+    print("-" * 30)
     print("Would you like to make changes to the inventory? y/n")
     while True:
         user_choice = input("> ")    
         if validate_yes_no(user_choice):
             if user_choice.lower() == "y":
-                print("Please type the ingredient name, amount and unit separated by space.")
-                print("For eg: tomato 200 g")
-                print("If ingredient has two words, use separator '-' or it might duplicate")
-                print("For eg: green-chilli 5 pc")
-                print("Press 0 to exit")
+                print()
+                print("*" * 30)
+                print("* Please type the ingredient name, amount and unit separated by space.")
+                print("* For eg: tomato 200 g")
+                print("* If ingredient has two words, use separator '-' or it might duplicate")
+                print("* For eg: green-chilli 5 pc")
+                print("* Press 0 to exit")
+                print("*" * 30)
+                print()
                 update_inventory()
                 break
            
@@ -161,6 +153,7 @@ def check_inventory():
     while True:
         if validate_yes_no(main_menu):
             if main_menu.lower() == "y":
+                print()
                 main()
                 break
             break
@@ -188,18 +181,22 @@ def update_inventory():
         input_list = user_input.split()
         if validate_invnetory_input(input_list):
             if input_list[0] in inventory_items:
+                print()
                 print("Updating...")
                 get_row_number = INVENTORY_LIST.find(input_list[0])
                 INVENTORY_LIST.update_cell(get_row_number.row, 2, input_list[1])
                 INVENTORY_LIST.update_cell(get_row_number.row, 3, input_list[2])
                 print("Updated \n")
             else:
+                print()
                 print("Adding...")
                 INVENTORY_LIST.append_row(input_list)
                 print("Added \n")
             
         user_input = input("> ")
+    print("*" * 30)
     print("Inventory Updated! \n")
+    print("*" * 30)
 
 
 # ---- SHOPPING LIST FUNCTIONS ----
@@ -213,7 +210,7 @@ def check_shopping_list():
     shopping_list = SHOPPING_WORKSHEET.get_all_values()
     print("Checking Shopping List...\n")
     if len(shopping_list) == 0:
-        print("Shopping list is empty.")
+        print("** Shopping list is empty. **")
     else:
         for index, items in enumerate(shopping_list):
             print(f"{index + 1}. {items[0].capitalize()}: {items[1]}")
@@ -221,6 +218,7 @@ def check_shopping_list():
     print()
     print("What would you like to do?")
     shopping_list_options()
+    print()
     print("Select Option Number as 1, 2, 3")
     while True:
         user_choice = int(input("> "))
@@ -238,6 +236,7 @@ def check_shopping_list():
     while True:
         if validate_yes_no(main_menu):
             if main_menu.lower() == "y":
+                print()
                 main()
                 break
             break
@@ -248,9 +247,10 @@ def add_items():
     """
     Lets user to add items to the shopping list.
     """
-    print("Please type in the item name and amount with unit separated by.")
-    print("For eg. milk 1l")
-    print("Press 0 to exit.")
+    print()
+    print("*" * 30)
+    print("* Please type in the item and amount as prompted.")
+    print("* Press 0 to exit.\n")
     continue_add = "y"
     while continue_add != "n":
         item_list = []
@@ -260,8 +260,10 @@ def add_items():
             item_amount = input("Amount to buy: ")
             item_list.append(item_amount)
             SHOPPING_WORKSHEET.append_row(item_list)
+            print()
             print("Added!\n")
         continue_add = input("Do you want to continue? y/n: ")
+        print()
 
 
 def remove_items():
@@ -270,9 +272,14 @@ def remove_items():
     """
     shopping_list = SHOPPING_WORKSHEET.get_all_values()
     if len(shopping_list) == 0:
-        print("No items found to remove.")
+        print()
+        print("** No items found to remove. **")
+        print()
     else:
+        print()
         print("You are choosing to delete items from the Shopping List.")
+        print("If there are duplicate items, it'll remove the last one added.")
+        print("*" * 30)
         continue_remove = "y"
         while continue_remove != "n":
             if validate_yes_no(continue_remove):
@@ -281,25 +288,30 @@ def remove_items():
                     if validate_remove_item(item_to_remove):
                         item_row = SHOPPING_WORKSHEET.findall(item_to_remove)
                         SHOPPING_WORKSHEET.delete_rows(item_row[-1].row)
+                        print()
                         print("Item Removed.")
                         break
                     item_to_remove = input("> ")
             continue_remove = input("Do you want to continue? y/n: ")
+            print()
 
 
 def clear_list():
     """
     Lets user to clear the Shopping List.
     """
-    print("WARNING: This will clear the whole shopping list.")
+    print()
+    print("*** WARNING: This will clear the whole shopping list. ***")
     while True:
         list_clear = input("Do you want to continue? y/n: ")
         if validate_yes_no(list_clear):
             if list_clear.lower() == "y":
                 SHOPPING_WORKSHEET.clear()
+                print("*" * 30)
                 print("Shopping List cleared!")
+                print("*" * 30)
             break
-
+            print()
 
 def shopping_list_options():
     """
@@ -357,6 +369,7 @@ def validate_recipe_choice(recipe_choice):
             )
     except ValueError as recipe_error:
         print(f"Invalid chocie: {recipe_error}")
+        print()
         return False
     return True
 
@@ -372,6 +385,7 @@ def validate_invnetory_input(data):
             )
     except ValueError as inventory_error:
         print(f"{inventory_error} Input the data as 'item amount unit'")
+        print()
         return False
     return True
 
@@ -387,6 +401,7 @@ def validate_shopping_list_options(user_input):
             )
     except ValueError as shopping_list_error:
         print(f"Invalid Input: {shopping_list_error}")
+        print()
         return False
     return True
 
@@ -404,6 +419,7 @@ def validate_remove_item(items):
             )
     except ValueError as remove_error:
         print(f"Invalid Input: {remove_error}")
+        print()
         return False
     return True
 
@@ -425,12 +441,12 @@ def main():
     """
     Initial messages and codes to execute on the program launch
     """
-    # user_input = ""
     while True:
+        print("*" * 30)
         print("What would you like to do?")
         list_of_services()
-        service_choice = input(": ")
-        print("*" * 20)
+        service_choice = input("> ")
+        print("*" * 30)
         if validate_service_choice(service_choice):
             if service_choice == "1":
                 fetch_recipe_list()
@@ -448,4 +464,7 @@ def main():
 print("Hi there!")
 print("Welcome to you personal kitchen assistant!")
 main()
+print("*" * 30)
 print("See you again!")
+print("*" * 30)
+print("*" * 30)
