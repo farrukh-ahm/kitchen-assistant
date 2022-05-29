@@ -221,13 +221,13 @@ def check_shopping_list():
     print()
     print("Select Option Number as 1, 2, 3")
     while True:
-        user_choice = int(input("> "))
+        user_choice = input("> ")
         if validate_shopping_list_options(user_choice):
-            if user_choice == 1:
+            if user_choice == "1":
                 add_items()
-            elif user_choice == 2:
+            elif user_choice == "2":
                 remove_items()
-            elif user_choice == 3:
+            elif user_choice == "3":
                 clear_list()
             else:
                 break
@@ -256,12 +256,15 @@ def add_items():
         item_list = []
         if validate_yes_no(continue_add):
             item_name = input("Name of the item: ")
-            item_list.append(item_name)
-            item_amount = input("Amount to buy: ")
-            item_list.append(item_amount)
-            SHOPPING_WORKSHEET.append_row(item_list)
-            print()
-            print("Added!\n")
+            if item_name == "0":
+                pass
+            else:
+                item_list.append(item_name)
+                item_amount = input("Amount to buy: ")
+                item_list.append(item_amount)
+                SHOPPING_WORKSHEET.append_row(item_list)
+                print()
+                print("Added!\n")
         continue_add = input("Do you want to continue? y/n: ")
         print()
 
@@ -277,15 +280,19 @@ def remove_items():
         print()
     else:
         print()
+        print("*" * 30)
         print("You are choosing to delete items from the Shopping List.")
         print("If there are duplicate items, it'll remove the last one added.")
+        print("Press 0 to exit or 'n' when prompted")
         print("*" * 30)
         continue_remove = "y"
         while continue_remove != "n":
             if validate_yes_no(continue_remove):
                 item_to_remove = input("What would you like to remove from the list? ")
                 while True:
-                    if validate_remove_item(item_to_remove):
+                    if item_to_remove == "0":
+                        break
+                    elif validate_remove_item(item_to_remove):
                         item_row = SHOPPING_WORKSHEET.findall(item_to_remove)
                         SHOPPING_WORKSHEET.delete_rows(item_row[-1].row)
                         print()
@@ -312,6 +319,7 @@ def clear_list():
                 print("*" * 30)
             break
             print()
+
 
 def shopping_list_options():
     """
@@ -395,7 +403,8 @@ def validate_shopping_list_options(user_input):
     Validates the user input for Shopping List services.
     """
     try:
-        if user_input not in range(1, 5):
+        transform_data = int(user_input)
+        if transform_data not in range(1, 5):
             raise ValueError(
                 f"You selected {user_input}, which does not exist. Please choose a service from the list"
             )
