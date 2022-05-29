@@ -1,6 +1,5 @@
 import gspread
 from google.oauth2.service_account import Credentials
-from pprint import pprint
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -77,12 +76,13 @@ def fetch_recipe_steps():
 
 def check_ingredients(data):
     """
-    Checks ingredient requirement against inventory to see whether required amount is present.
+    Checks ingredient requirement against inventory to see
+    whether required amount is present.
     Returns True if ingredients are available, else create a shopping list.
     """
     recipe_ing_sheet = SHEET.worksheet("recipes_ing")
-    ing_col_num = recipe_ing_sheet.find(data)  # Get column number of the recipe
-    get_ing_list = recipe_ing_sheet.col_values(ing_col_num.col)  # Get data of req ing.
+    ing_col_num = recipe_ing_sheet.find(data)  # Get column number of the recp
+    get_ing_list = recipe_ing_sheet.col_values(ing_col_num.col)  # Get req ing.
     ingredient_list = []
     for index in range(1, len(get_ing_list)):
         new_data = get_ing_list[index].split()
@@ -95,8 +95,8 @@ def check_ingredients(data):
     print("*" * 30)
     for items in ingredient_list:
         ingredient_amount = int(items[1])
-        inventory_search = inventory_sheet.find(items[0])
-        inventory_amount = int(inventory_sheet.cell(inventory_search.row, 2).value)
+        inv_search = inventory_sheet.find(items[0])
+        inventory_amount = int(inventory_sheet.cell(inv_search.row, 2).value)
         if ingredient_amount > inventory_amount:
             shortage = ingredient_amount - inventory_amount
             print(f"** {items[0].upper()}: Required- {ingredient_amount}{items[2]} Short By: {shortage}{items[2]}")
@@ -133,7 +133,7 @@ def check_inventory():
     print("-" * 30)
     print("Would you like to make changes to the inventory? y/n")
     while True:
-        user_choice = input("> ")    
+        user_choice = input("> ")
         if validate_yes_no(user_choice):
             if user_choice.lower() == "y":
                 print()
@@ -147,7 +147,7 @@ def check_inventory():
                 print()
                 update_inventory()
                 break
-           
+
             break
     main_menu = input("Would you like to go back to the main menu? y/n: ")
     while True:
@@ -164,9 +164,9 @@ def fetch_inventory():
     """
     Access the inventory worksheet and gets the list
     """
-    global INVENTORY_LIST
-    INVENTORY_LIST = SHEET.worksheet("inventory") 
-    inventory_data = INVENTORY_LIST.get_all_values()
+    global INV_LIST
+    INV_LIST = SHEET.worksheet("inventory")
+    inventory_data = INV_LIST.get_all_values()
     for serial, items in enumerate(inventory_data):
         print(f"{serial+1}: {items[0].capitalize()} - {items[1]}{items[2]}")
 
@@ -175,7 +175,7 @@ def update_inventory():
     """
     Updates the inventory with user's input
     """
-    inventory_items = INVENTORY_LIST.col_values(1)
+    inventory_items = INV_LIST.col_values(1)
     user_input = input("> ")
     while user_input != "0":
         input_list = user_input.split()
@@ -183,16 +183,16 @@ def update_inventory():
             if input_list[0] in inventory_items:
                 print()
                 print("Updating...")
-                get_row_number = INVENTORY_LIST.find(input_list[0])
-                INVENTORY_LIST.update_cell(get_row_number.row, 2, input_list[1])
-                INVENTORY_LIST.update_cell(get_row_number.row, 3, input_list[2])
+                get_row_number = INV_LIST.find(input_list[0])
+                INV_LIST.update_cell(get_row_number.row, 2, input_list[1])
+                INV_LIST.update_cell(get_row_number.row, 3, input_list[2])
                 print("Updated \n")
             else:
                 print()
                 print("Adding...")
-                INVENTORY_LIST.append_row(input_list)
+                INV_LIST.append_row(input_list)
                 print("Added \n")
-            
+
         user_input = input("> ")
     print("*" * 30)
     print("Inventory Updated! \n")
@@ -214,7 +214,7 @@ def check_shopping_list():
     else:
         for index, items in enumerate(shopping_list):
             print(f"{index + 1}. {items[0].capitalize()}: {items[1]}")
-    
+
     print()
     print("What would you like to do?")
     shopping_list_options()
@@ -288,7 +288,7 @@ def remove_items():
         continue_remove = "y"
         while continue_remove != "n":
             if validate_yes_no(continue_remove):
-                item_to_remove = input("What would you like to remove from the list? ")
+                item_to_remove = input("What would you like to remove?")
                 while True:
                     if item_to_remove == "0":
                         break
@@ -318,7 +318,7 @@ def clear_list():
                 print("Shopping List cleared!")
                 print("*" * 30)
             break
-            print()
+        print()
 
 
 def shopping_list_options():
@@ -344,7 +344,7 @@ def validate_service_choice(user_input):
     except ValueError as error:
         print(f"Invalid Data: {error}")
         print()
-        return False  
+        return False
     return True
 
 
@@ -373,10 +373,10 @@ def validate_recipe_choice(recipe_choice):
     try:
         if recipe_choice not in available_recipes:
             raise ValueError(
-                f"Sorry, recipe for {recipe_choice} not available. Please choose one from the list"
+                f"Sorry, recipe for {recipe_choice} not available."
             )
     except ValueError as recipe_error:
-        print(f"Invalid chocie: {recipe_error}")
+        print(f"Invalid chocie: {recipe_error}. Please choose from the list")
         print()
         return False
     return True
@@ -406,10 +406,10 @@ def validate_shopping_list_options(user_input):
         transform_data = int(user_input)
         if transform_data not in range(1, 5):
             raise ValueError(
-                f"You selected {user_input}, which does not exist. Please choose a service from the list"
+                f"You selected {user_input}, which does not exist."
             )
-    except ValueError as shopping_list_error:
-        print(f"Invalid Input: {shopping_list_error}")
+    except ValueError as shop_list_error:
+        print(f"Invalid Input: {shop_list_error}. Please choose from the list")
         print()
         return False
     return True
@@ -438,7 +438,8 @@ def list_of_services():
     """
     Generate all the services provided by the program.
     """
-    services = ["Check Recipe", "Check Inventory", "Check Shopping List", "Exit"]
+    services = ["Check Recipe", "Check Inventory",
+                "Check Shopping List", "Exit"]
     for nos, service in enumerate(services):
         if service == "Exit":
             print("0: Exit")
