@@ -472,7 +472,7 @@ def main():
 
 
 print("Hi there!")
-print("Welcome to you personal kitchen assistant!")
+print("Welcome to your personal kitchen assistant!")
 main()
 print("*" * 30)
 print("See you again!")
