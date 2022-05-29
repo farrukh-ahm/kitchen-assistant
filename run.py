@@ -24,7 +24,7 @@ def fetch_recipe_list():
         print(f"{nos+1}: {recipe.capitalize()}")
     print("*" * 30)
     while True:
-        user_cook = input("Would you like to cook today?(y/n)  ")
+        user_cook = input("Would you like to cook today?(y/n)\n")
         print()
         if validate_yes_no(user_cook):
             if user_cook.lower() == "y":
@@ -32,7 +32,7 @@ def fetch_recipe_list():
                 print("*" * 30)
                 break
             break
-    main_menu = input("Would you like to go back to the main menu? y/n: ")
+    main_menu = input("Would you like to go back to the main menu? y/n:\n")
     while True:
         if validate_yes_no(main_menu):
             if main_menu.lower() == "y":
@@ -40,7 +40,7 @@ def fetch_recipe_list():
                 main()
                 break
             break
-        main_menu = input(": ")
+        main_menu = input(":\n")
 
 
 def fetch_recipe_steps():
@@ -49,7 +49,7 @@ def fetch_recipe_steps():
     """
     print("*" * 30)
     while True:
-        food_choice = input("What would you like to cook? ")
+        food_choice = input("What would you like to cook?\n")
         if validate_recipe_choice(food_choice.lower()):
             next_step = check_ingredients(food_choice)
             if next_step is False:
@@ -78,7 +78,7 @@ def check_ingredients(data):
     """
     Checks ingredient requirement against inventory to see
     whether required amount is present.
-    Returns True if ingredients are available, else create a shopping list.
+    Returns False if ingredients are available, else create a shopping list.
     """
     recipe_ing_sheet = SHEET.worksheet("recipes_ing")
     ing_col_num = recipe_ing_sheet.find(data)  # Get column number of the recp
@@ -133,7 +133,7 @@ def check_inventory():
     print("-" * 30)
     print("Would you like to make changes to the inventory? y/n")
     while True:
-        user_choice = input("> ")
+        user_choice = input(">\n ")
         if validate_yes_no(user_choice):
             if user_choice.lower() == "y":
                 print()
@@ -149,7 +149,7 @@ def check_inventory():
                 break
 
             break
-    main_menu = input("Would you like to go back to the main menu? y/n: ")
+    main_menu = input("Would you like to go back to the main menu? y/n:\n")
     while True:
         if validate_yes_no(main_menu):
             if main_menu.lower() == "y":
@@ -157,7 +157,7 @@ def check_inventory():
                 main()
                 break
             break
-        main_menu = input(": ")
+        main_menu = input(":\n")
 
 
 def fetch_inventory():
@@ -176,7 +176,7 @@ def update_inventory():
     Updates the inventory with user's input
     """
     inventory_items = INV_LIST.col_values(1)
-    user_input = input("> ")
+    user_input = input(">\n")
     while user_input != "0":
         input_list = user_input.split()
         if validate_invnetory_input(input_list):
@@ -193,7 +193,7 @@ def update_inventory():
                 INV_LIST.append_row(input_list)
                 print("Added \n")
 
-        user_input = input("> ")
+        user_input = input(">\n")
     print("*" * 30)
     print("Inventory Updated! \n")
     print("*" * 30)
@@ -221,7 +221,7 @@ def check_shopping_list():
     print()
     print("Select Option Number as 1, 2, 3")
     while True:
-        user_choice = input("> ")
+        user_choice = input(">\n")
         if validate_shopping_list_options(user_choice):
             if user_choice == "1":
                 add_items()
@@ -232,7 +232,7 @@ def check_shopping_list():
             else:
                 break
             break
-    main_menu = input("Would you like to go back to the main menu? y/n: ")
+    main_menu = input("Would you like to go back to the main menu? y/n:\n")
     while True:
         if validate_yes_no(main_menu):
             if main_menu.lower() == "y":
@@ -240,7 +240,7 @@ def check_shopping_list():
                 main()
                 break
             break
-        main_menu = input(": ")
+        main_menu = input(":\n")
 
 
 def add_items():
@@ -255,17 +255,17 @@ def add_items():
     while continue_add != "n":
         item_list = []
         if validate_yes_no(continue_add):
-            item_name = input("Name of the item: ")
+            item_name = input("Name of the item:\n")
             if item_name == "0":
                 pass
             else:
                 item_list.append(item_name)
-                item_amount = input("Amount to buy: ")
+                item_amount = input("Amount to buy:\n")
                 item_list.append(item_amount)
                 SHOPPING_WORKSHEET.append_row(item_list)
                 print()
                 print("Added!\n")
-        continue_add = input("Do you want to continue? y/n: ")
+        continue_add = input("Do you want to continue? y/n:\n")
         print()
 
 
@@ -288,7 +288,7 @@ def remove_items():
         continue_remove = "y"
         while continue_remove != "n":
             if validate_yes_no(continue_remove):
-                item_to_remove = input("What would you like to remove?")
+                item_to_remove = input("What would you like to remove?\n")
                 while True:
                     if item_to_remove == "0":
                         break
@@ -298,8 +298,8 @@ def remove_items():
                         print()
                         print("Item Removed.")
                         break
-                    item_to_remove = input("> ")
-            continue_remove = input("Do you want to continue? y/n: ")
+                    item_to_remove = input(">")
+            continue_remove = input("Do you want to continue? y/n:\n")
             print()
 
 
@@ -310,7 +310,7 @@ def clear_list():
     print()
     print("*** WARNING: This will clear the whole shopping list. ***")
     while True:
-        list_clear = input("Do you want to continue? y/n: ")
+        list_clear = input("Do you want to continue? y/n:\n")
         if validate_yes_no(list_clear):
             if list_clear.lower() == "y":
                 SHOPPING_WORKSHEET.clear()
@@ -339,10 +339,10 @@ def validate_service_choice(user_input):
         int(user_input)
         if int(user_input) not in range(0, 4):
             raise ValueError(
-                f"{user_input} not a valid option. Please choose a service from the list."
+                f"{user_input} not a valid option"
             )
     except ValueError as error:
-        print(f"Invalid Data: {error}")
+        print(f"Invalid Data: {error}. Please choose an available service.")
         print()
         return False
     return True
@@ -373,7 +373,7 @@ def validate_recipe_choice(recipe_choice):
     try:
         if recipe_choice not in available_recipes:
             raise ValueError(
-                f"Sorry, recipe for {recipe_choice} not available."
+                f"Sorry, recipe for {recipe_choice} not available"
             )
     except ValueError as recipe_error:
         print(f"Invalid chocie: {recipe_error}. Please choose from the list")
@@ -455,7 +455,7 @@ def main():
         print("*" * 30)
         print("What would you like to do?")
         list_of_services()
-        service_choice = input("> ")
+        service_choice = input(">\n")
         print("*" * 30)
         if validate_service_choice(service_choice):
             if service_choice == "1":
