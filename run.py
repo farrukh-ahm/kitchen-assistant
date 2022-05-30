@@ -49,7 +49,7 @@ def fetch_recipe_steps():
     """
     print("*" * 30)
     while True:
-        food_choice = input("What would you like to cook?\n")
+        food_choice = input("Please enter the recipe name:\n")
         if validate_recipe_choice(food_choice.lower()):
             next_step = check_ingredients(food_choice)
             if next_step is False:
@@ -133,7 +133,7 @@ def check_inventory():
     print("-" * 30)
     print("Would you like to make changes to the inventory? y/n")
     while True:
-        user_choice = input(">\n ")
+        user_choice = input(">\n")
         if validate_yes_no(user_choice):
             if user_choice.lower() == "y":
                 print()
@@ -144,7 +144,6 @@ def check_inventory():
                 print("* For eg: green-chilli 5 pc")
                 print("* Press 0 to exit")
                 print("*" * 30)
-                print()
                 update_inventory()
                 break
 
@@ -219,7 +218,7 @@ def check_shopping_list():
     print("What would you like to do?")
     shopping_list_options()
     print()
-    print("Select Option Number as 1, 2, 3")
+    print("Select Option Number as 1, 2, 3, 4")
     while True:
         user_choice = input(">\n")
         if validate_shopping_list_options(user_choice):
@@ -454,6 +453,8 @@ def main():
     while True:
         print("*" * 30)
         print("What would you like to do?")
+        print("Choose a service as 1, 2, 3, 4")
+        print("*" * 30)
         list_of_services()
         service_choice = input(">\n")
         print("*" * 30)
