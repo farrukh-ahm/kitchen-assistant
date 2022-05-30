@@ -43,6 +43,11 @@ The app also displays the shopping list, and provides the user with the option t
     1. As a first time user, I want to easily navigate throughout the app without getting overwhelmed by any of the features.
     1. As a first time user, I want the instructions to be clear and precise.
 
+  - ### Regular/Frequent User:
+    1. As a regular user, I want to be able to organise my kitchen easily and without any hassle.
+    1. As a regular user, I want to have the precise knowledge of where to go to achieve a particular task.
+    1. As a regular user, I want the app to run smoothly without any bugs or issues.
+
  ### Process Flow Chart: <a name="flow"></a>
   ![Flowchart of the process](./assets/readme-images/project%203%20layout.JPG)
 
@@ -191,5 +196,5 @@ The steps taken to deploy the project via Heroku are as follows:
     - All the contents of the app was written by the developer.
   - ### Acknowledgement:
     - Code institute for the deployment terminal
-    - My Mentor for continuous helpful feedback.
+    - My Mentor, Martina Terlevic, for her continuous helpful feedback.
     - Tutor support at Code Institute for their support.
