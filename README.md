@@ -1,31 +1,47 @@
-![CI logo](https://codeinstitute.s3.amazonaws.com/fullstack/ci_logo_small.png)
+# Kitchen-Assistant
+[View the live project here](https://kitchen-assistant-program.herokuapp.com/)
 
-Welcome farrukh-ahm,
+## Application Objectives
+The Kitchen Assistant is an app to help an individual plan out their meal by sharing easy food recipes, while also maintaining a record of available items in the inventory. The app does not only help maintain that, it also helps the user to create a shopping list and adds items to it according to the shortage of ingredients required for any particular recipe.
+Using this app is very easy and convinient. A user can quickly and effortlessly view what all recipes are available in the system and choose any according to their liking. They can also view the items in the inventory and can manually add more items or change the amount of the available items.
+The app also displays the shopping list, and provides the user with the option to add/remove items to it.
 
-This is the Code Institute student template for deploying your third portfolio project, the Python command-line project. The last update to this file was: **August 17, 2021**
+![Image of application responsiveness on different devices](./assets/readme-images/amiresponsive.JPG)
 
-## Reminders
 
-* Your code must be placed in the `run.py` file
-* Your dependencies must be placed in the `requirements.txt` file
-* Do not edit any of the other files or your code may not deploy properly
+# Table of Content
+ -  [UX/UI](#ux)
+    - [User Demographic](#demographic)
+    - [User Stories](#stories)
+    - [Process Flow](#flow)
+ - [Features](#features)
+    - [Present Features](#present)
+        1. [Check Recipe](#recipe)
+        1. [Check Inventory](#inventory)
+        1. [Check Shopping List](#shopping-list)
+            - [Add Items](#add)
+            - [Remove Items](#remove)
+            - [Clear List](#clear)
+    - [Future Features](#future)
+ - [Technologies and Libraries Used](#tech)
+    1. [Main Language Used](#language)
+    1. [Python Library and API used](#api)
+    1. [Data Storage](#storage)
+ - [Testing and Bug Fixes](#testing)
+ - [Development and Deployment](#deployment)
+ - [Credits and Acknowledgement](#credits)
 
-## Creating the Heroku app
 
-When you create the app, you will need to add two buildpacks from the _Settings_ tab. The ordering is as follows:
+# UX/UI <a name="ux"></a>
 
-1. `heroku/python`
-2. `heroku/nodejs`
+ ## User Demographic: <a name="demographic"></a>
+  - The Kitchen-Assitant app is targeted towards anyone who wants to have an organised kitchen, with all their recipes saved at one location and easily accessible with the ease of knowing what ingredients are available to cook.
+ 
+ ## User Stories:<a name="stories"></a>
+  - ### First Time User:
+    1. As a first time user, I want to easily understand the functioning of the application without getting confused with any of the features.
+    1. As a first time user, I want to easily navigate throughout the app without getting overwhelmed by any of the features.
+    1. As a first time user, I want the instructions to be clear and precise.
 
-You must then create a _Config Var_ called `PORT`. Set this to `8000`
-
-If you have credentials, such as in the Love Sandwiches project, you must create another _Config Var_ called `CREDS` and paste the JSON into the value field.
-
-Connect your GitHub repository and deploy as normal.
-
-## Constraints
-
-The deployment terminal is set to 80 columns by 24 rows. That means that each line of text needs to be 80 characters or less otherwise it will be wrapped onto a second line.
-
------
-Happy coding!
+ ## Process Flow Chart: <a name="flow"></a>
+  !["Flowchart of the process"](./assets/readme-images/project%203%20layout.JPG)
