@@ -11,6 +11,8 @@ CREDS = Credentials.from_service_account_file("creds.json")
 SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open("kitchen_assistant")
+INV_LIST = SHEET.worksheet("inventory")
+SHOPPING_WORKSHEET = SHEET.worksheet("shopping_list")
 
 
 # ---- RECIPE FUNCTIONS ----
@@ -163,8 +165,6 @@ def fetch_inventory():
     """
     Access the inventory worksheet and gets the list
     """
-    global INV_LIST
-    INV_LIST = SHEET.worksheet("inventory")
     inventory_data = INV_LIST.get_all_values()
     for serial, items in enumerate(inventory_data):
         print(f"{serial+1}: {items[0].capitalize()} - {items[1]}{items[2]}")
@@ -204,8 +204,6 @@ def check_shopping_list():
     Fetches the shopping list and provide options to add/remove items
     or clear the list.
     """
-    global SHOPPING_WORKSHEET
-    SHOPPING_WORKSHEET = SHEET.worksheet("shopping_list")
     shopping_list = SHOPPING_WORKSHEET.get_all_values()
     print("Checking Shopping List...\n")
     if len(shopping_list) == 0:
